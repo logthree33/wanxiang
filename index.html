@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>万相搜索 | 一目万相，俯仰自得</title>
+    
+    <!-- 【修改点 1：网站图标 Favicon】 -->
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    
+    <!-- 引入 Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入 Lucide 图标库 -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- 引入 Inter 字体 -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                    colors: {
+                        dark: '#0D0D0D',
+                        accent: '#3B82F6'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* 自定义动效 */
+        body {
+            background-color: #0D0D0D;
+            color: #FFFFFF;
+            overflow-x: hidden;
+        }
+
+        /* 滚动淡入效果 */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* 窗口悬浮呼吸动效 */
+        .float-anim {
+            animation: float 6s ease-in-out infinite;
+        }
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+            100% { transform: translateY(0px); }
+        }
+
+        /* 背景光晕 */
+        .glow-bg {
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(59,130,246,0.15) 0%, rgba(13,13,13,0) 70%);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* 玻璃拟物化 */
+        .glass {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* 隐藏滚动条但保留功能 */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0D0D0D;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+    </style>
+</head>
+<body class=" antialiased selection:bg-accent selection:text-white">
+
+    <!-- 导航栏 -->
+    <nav class="fixed w-full z-50 glass transition-all duration-300" id="navbar">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-2 cursor-pointer">
+                <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-gray-700 to-black border border-gray-600 flex items-center justify-center shadow-lg overflow-hidden">
+                    <!-- ========================================== -->
+                    <!-- 【修改点 3：替换左上角导航栏图标】 -->
+                    <!-- 请确保你有一张名为 logo.png 的图片和 index.html 放在一起 -->
+                    <!-- ========================================== -->
+                    <img src="logo.png" alt="万相" class="w-5 h-5 object-contain" onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'white\' stroke-width=\'2\' stroke-linecap=\'round\' stroke-linejoin=\'round\'><polygon points=\'12 2 2 7 12 12 22 7 12 2\'/><polyline points=\'2 17 12 22 22 17\'/><polyline points=\'2 12 12 17 22 12\'/></svg>'">
+                </div>
+                <span class="font-semibold text-lg tracking-wider">万相搜索</span>
+            </div>
+            <div class="hidden md:flex gap-8 text-sm text-gray-400">
+                <a href="#features" class="hover:text-white transition-colors">特性</a>
+                <a href="#value" class="hover:text-white transition-colors">为什么选择</a>
+                <a href="#" class="hover:text-white transition-colors">更新日志</a>
+            </div>
+            <button class="text-gray-400 hover:text-white transition-colors">
+                <i data-lucide="github" class="w-5 h-5"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- 第一屏：Hero Section -->
+    <section class="relative min-h-screen flex flex-col items-center justify-center pt-32 pb-20 px-4 overflow-hidden">
+        <div class="glow-bg"></div>
+        
+        <div class="text-center z-10 max-w-3xl mx-auto reveal active">
+            <h1 class="text-5xl md:text-7xl font-bold mb-6 tracking-tight">
+                一目万相，<br class="md:hidden"/>俯仰自得
+            </h1>
+            <p class="text-gray-400 text-lg md:text-xl mb-10 max-w-2xl mx-auto font-light">
+                极简、高效、沉浸。为你打造的下一代桌面聚合搜索工作站。告别繁杂的浏览器标签，让信息的获取回归纯粹。
+            </p>
+            
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <button id="downloadBtn" onclick="startDownload()" class="relative overflow-hidden group bg-accent hover:bg-blue-400 text-white px-8 py-4 rounded-full font-medium transition-all shadow-[0_0_40px_rgba(59,130,246,0.3)] hover:shadow-[0_0_60px_rgba(59,130,246,0.5)] flex items-center gap-2 w-64 justify-center">
+                    <span id="btnText" class="z-10 flex items-center gap-2">
+                        <i data-lucide="download" class="w-5 h-5"></i>
+                        免费下载 (Windows)
+                    </span>
+                    <div id="btnProgress" class="absolute left-0 top-0 h-full bg-blue-600 w-0 transition-all duration-75"></div>
+                </button>
+                <p class="text-xs text-gray-500">v1.0.0 Beta · 大小 45MB</p>
+            </div>
+        </div>
+
+        <!-- 真实的软件截图轮播区 -->
+        <div class="mt-20 w-full max-w-5xl z-10 reveal perspective-1000">
+            <!-- 去掉了多余的假UI，保留了悬浮动效、高级阴影，并设置了 16:9 (aspect-video) 比例以完美适配你的软件截图 -->
+            <div class="float-anim rounded-xl border border-gray-800 bg-[#0a0a0a] shadow-[0_20px_50px_rgba(0,0,0,0.5)] relative overflow-hidden aspect-video">
+                
+                <!-- ========================================== -->
+                <!-- 【修改点 4：真实的软件截图轮播区】 -->
+                <!-- 请准备三张你的软件截图，分别命名为 shot1.png, shot2.png, shot3.png 放在同一目录下 -->
+                <!-- ========================================== -->
+                <div id="carousel" class="absolute inset-0 w-full h-full z-0">
+                    <!-- 第一张图 -->
+                    <div class="carousel-slide absolute inset-0 bg-cover bg-center transition-opacity duration-1000 opacity-100" 
+                         style="background-image: url('shot1.png'), url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop');">
+                    </div>
+                    <!-- 第二张图 -->
+                    <div class="carousel-slide absolute inset-0 bg-cover bg-center transition-opacity duration-1000 opacity-0" 
+                         style="background-image: url('shot2.png'), url('https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=2564&auto=format&fit=crop');">
+                    </div>
+                    <!-- 第三张图 -->
+                    <div class="carousel-slide absolute inset-0 bg-cover bg-center transition-opacity duration-1000 opacity-0" 
+                         style="background-image: url('shot3.png'), url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2572&auto=format&fit=crop');">
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- 第二屏：核心特性 -->
+    <section id="features" class="py-24 px-4 bg-[#080808] border-y border-gray-900">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16 reveal">
+                <h2 class="text-3xl font-bold mb-4">重新定义搜索体验</h2>
+                <p class="text-gray-400">摒弃多余干扰，让每一次查询都直达核心。</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- 特性 1 -->
+                <div class="glass p-8 rounded-2xl reveal border border-gray-800 hover:border-gray-700 transition-colors">
+                    <div class="w-12 h-12 rounded-full bg-blue-500/10 flex items-center justify-center mb-6 text-blue-400">
+                        <i data-lucide="layout-panel-left" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">三分屏聚合展现</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">
+                        一次输入，同时调用多个搜索引擎（如小红书、Pinterest、花瓣）。对比阅读，极大提升信息筛选效率。
+                    </p>
+                </div>
+                <!-- 特性 2 -->
+                <div class="glass p-8 rounded-2xl reveal border border-gray-800 hover:border-gray-700 transition-colors" style="transition-delay: 100ms;">
+                    <div class="w-12 h-12 rounded-full bg-purple-500/10 flex items-center justify-center mb-6 text-purple-400">
+                        <i data-lucide="zap" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">多模式秒切</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">
+                        内置全网、学术、图片、代码等多种场景预设。点击搜索框左侧图标，瞬间切换专属工作流。
+                    </p>
+                </div>
+                <!-- 特性 3 -->
+                <div class="glass p-8 rounded-2xl reveal border border-gray-800 hover:border-gray-700 transition-colors" style="transition-delay: 200ms;">
+                    <div class="w-12 h-12 rounded-full bg-emerald-500/10 flex items-center justify-center mb-6 text-emerald-400">
+                        <i data-lucide="image" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">沉浸式初始页</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">
+                        支持自定义高清壁纸与智能遮罩。搭配极简时钟与快捷搜索历史，让主页成为你最美的数字桌面。
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 第三屏：价值主张 -->
+    <section id="value" class="py-24 px-4 relative overflow-hidden">
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-blue-600/5 blur-[120px] rounded-full pointer-events-none"></div>
+        
+        <div class="max-w-4xl mx-auto text-center reveal">
+            <h2 class="text-3xl font-bold mb-16">为什么你需要万相？</h2>
+            
+            <div class="space-y-12 text-left">
+                <div class="flex flex-col md:flex-row gap-6 items-start">
+                    <div class="shrink-0 p-4 rounded-xl bg-gray-900 border border-gray-800">
+                        <i data-lucide="focus" class="w-6 h-6 text-gray-300"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-xl font-medium mb-2">绝对沉浸，告别分心</h4>
+                        <p class="text-gray-400">浏览器总是诱惑你打开无数个标签页。万相搜索作为一个独立的客户端，剥离了所有与“搜索”无关的元素，让你专注找答案。</p>
+                    </div>
+                </div>
+                
+                <div class="flex flex-col md:flex-row gap-6 items-start">
+                    <div class="shrink-0 p-4 rounded-xl bg-gray-900 border border-gray-800">
+                        <i data-lucide="timer" class="w-6 h-6 text-gray-300"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-xl font-medium mb-2">效率翻倍，时间还给你</h4>
+                        <p class="text-gray-400">在设计找图、查代码等场景，你不需要在不同的网站间来回切换。同屏展示让你在 1 分钟内完成过去 5 分钟的对比工作。</p>
+                    </div>
+                </div>
+                
+                <div class="flex flex-col md:flex-row gap-6 items-start">
+                    <div class="shrink-0 p-4 rounded-xl bg-gray-900 border border-gray-800">
+                        <i data-lucide="shield-check" class="w-6 h-6 text-gray-300"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-xl font-medium mb-2">数据私有，安全放心</h4>
+                        <p class="text-gray-400">所有搜索历史与偏好设置均加密存储在你的本地电脑中，不上传云端，你的习惯只属于你自己。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 底部 Footer -->
+    <footer class="border-t border-gray-900 py-10 px-4 mt-10">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-2">
+                <i data-lucide="layers" class="w-5 h-5 text-gray-500"></i>
+                <span class="text-gray-500 font-medium">万相搜索</span>
+            </div>
+            <p class="text-gray-600 text-sm">© 2026 Bicyso. All rights reserved.</p>
+            <div class="flex gap-4 text-sm">
+                <a href="#" class="text-gray-500 hover:text-gray-300">GitHub 仓库</a>
+                <a href="#" class="text-gray-500 hover:text-gray-300">联系开发者</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 初始化 Lucide 图标
+        lucide.createIcons();
+
+        // ==========================================
+        // 【轮播图逻辑】每 4 秒切换一次背景图
+        // ==========================================
+        const slides = document.querySelectorAll('.carousel-slide');
+        let currentSlide = 0;
+        
+        if (slides.length > 0) {
+            setInterval(() => {
+                // 隐藏当前图
+                slides[currentSlide].classList.remove('opacity-100');
+                slides[currentSlide].classList.add('opacity-0');
+                
+                // 计算下一张图的索引
+                currentSlide = (currentSlide + 1) % slides.length;
+                
+                // 显示下一张图
+                slides[currentSlide].classList.remove('opacity-0');
+                slides[currentSlide].classList.add('opacity-100');
+            }, 4000); // 4000 毫秒 = 4 秒，你可以随意修改这个数字
+        }
+
+        // 监听滚动实现元素淡入效果
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.15
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.reveal').forEach(el => {
+            if (!el.classList.contains('active')) {
+                observer.observe(el);
+            }
+        });
+
+        // 导航栏背景渐变效果
+        window.addEventListener('scroll', () => {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('bg-black/80', 'border-b', 'border-gray-800');
+                navbar.classList.remove('bg-transparent', 'border-transparent');
+            } else {
+                navbar.classList.remove('bg-black/80', 'border-b', 'border-gray-800');
+                navbar.classList.add('bg-transparent', 'border-transparent');
+            }
+        });
+
+        function startDownload() {
+            const btn = document.getElementById('downloadBtn');
+            const btnText = document.getElementById('btnText');
+            const progress = document.getElementById('btnProgress');
+            
+            if(btn.classList.contains('downloading')) return;
+            
+            btn.classList.add('downloading');
+            btnText.innerHTML = '<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i> 准备中...';
+            lucide.createIcons();
+            
+            let width = 0;
+            const interval = setInterval(() => {
+                width += Math.random() * 15;
+                if(width > 100) width = 100;
+                progress.style.width = width + '%';
+                
+                if(width > 20) btnText.innerHTML = '获取资源中 ' + Math.floor(width) + '%';
+                
+                if (width === 100) {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        // 触发真实下载的链接
+                        const actualDownloadUrl = "WanxiangSearch_Setup.exe"; 
+                        
+                        const downloadAnchor = document.createElement('a');
+                        downloadAnchor.href = actualDownloadUrl;
+                        downloadAnchor.download = "万相搜索_v1.0.0.exe"; 
+                        document.body.appendChild(downloadAnchor);
+                        downloadAnchor.click(); 
+                        document.body.removeChild(downloadAnchor);
+
+                        btnText.innerHTML = '<i data-lucide="check" class="w-5 h-5"></i> 已开始下载';
+                        lucide.createIcons();
+                        progress.classList.add('bg-emerald-500');
+                        progress.classList.remove('bg-blue-600');
+                        
+                        setTimeout(() => {
+                            btn.classList.remove('downloading');
+                            progress.style.width = '0%';
+                            progress.classList.remove('bg-emerald-500');
+                            progress.classList.add('bg-blue-600');
+                            btnText.innerHTML = '<i data-lucide="download" class="w-5 h-5"></i> 免费下载 (Windows)';
+                            lucide.createIcons();
+                        }, 3000);
+                    }, 300);
+                }
+            }, 80);
+        }
+    </script>
+</body>
+</html>
